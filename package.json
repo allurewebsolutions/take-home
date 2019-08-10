@@ -1,0 +1,63 @@
+{
+  "name": "web-starter-template",
+  "version": "0.1.0",
+  "description": "The Web Starter Template (WST) is a starting point for creating Front End Web applications.",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "moment": "^2.24.0"
+  },
+  "scripts": {
+    "servers": "NODE_ENV=development gulp watch",
+    "dev-server": "NODE_ENV=development gulp dev_server",
+    "node-server": "NODE_ENV=development nodemon server/app.js",
+    "prod": "NODE_ENV=production gulp prod",
+    "dev-tests": "NODE_ENV=development gulp tests",
+    "image-min": "NODE_ENV=development gulp images",
+    "sass": "NODE_ENV=development gulp sass",
+    "third-party": "NODE_ENV=development gulp vendor"
+  },
+  "keywords": [
+    "Web",
+    "Front",
+    "End",
+    "Template"
+  ],
+  "author": "Shaun Hinchy",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "7.0.0-beta.34",
+    "@babel/preset-react": "^7.0.0-beta.36",
+    "@babel/runtime": "^7.4.5",
+    "axios": "^0.19.0",
+    "babel-loader": "8.0.0-beta.0",
+    "babel-preset-react": "^6.24.1",
+    "better-sqlite3": "^5.4.0",
+    "body-parser": "^1.19.0",
+    "browser-sync": "^2.26.3",
+    "express": "^4.17.1",
+    "gulp": "3.9.1",
+    "gulp-autoprefixer": "4.0.0",
+    "gulp-git": "^2.5.0",
+    "gulp-imagemin": "4.0.0",
+    "gulp-mustache": "3.0.0",
+    "gulp-rename": "1.2.2",
+    "gulp-sass": "3.1.0",
+    "gulp-sourcemaps": "2.6.1",
+    "nodemon": "^1.14.7",
+    "prop-types": "^15.7.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "sqlite3": "^4.0.9",
+    "uglify-js": "3.2.2",
+    "uniqid": "^5.0.3",
+    "webpack": "3.10.0",
+    "webpack-stream": "4.0.0"
+  }
+}

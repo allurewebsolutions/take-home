@@ -1,8 +1,78 @@
+# Redox Coding Test - Mike Doubintchik
+
+## Quickstart / TL;DR;
+Scan this QR code inside the Expo app
+
+![expo](http://oi64.tinypic.com/2pyq837.jpg "Expo App QR Code")
+
+## App Features
+- Slide source to the left to show edit/delete buttons
+    - Edit source allows you to change encoding and environment
+    - Delete source will update the deleted_at field in the database and stop displaying the source
+- Press on source to view all messages for a particular source
+- Press on a message to view the message status in an overlay
+
+## Initiate the project
+- Run `yarn` in both the root folder and inside the `app/` folder
+
+## Frontend
+The frontend was built using React Native
+
+### Running the frontend
+There are two ways to run the frontend, either locally or using the Expo app
+##### Locally
+To run the frontend locally you must have either XCODE or an Android Virtual Device installed and the [Expo-cli](https://docs.expo.io/versions/latest/introduction/installation/)
+
+Navigate to the `app` folder and run `yarn start`. This will open a browser window with the Expo dashboard
+
+##### Expo
+You can download the [Expo app](https://expo.io) for your [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=www) or [iOS device](https://itunes.apple.com/app/apple-store/id982107779)
+
+Then inside the Expo app you can load the Expo URL (`exp://exp.host/@allurewebsolutions/app`) or scan the below QR code
+
+![expo](http://oi64.tinypic.com/2pyq837.jpg "Expo App QR Code")
+
+## Backend
+The backend was built using Node.js and Express.
+
+### Running the backend
+The backend is provided on a server I setup at `http://redox.allureprojects.com:8888/`. If you are using the Expo version of the app, then there is no need to run the backend locally. 
+
+If you want to run the app locally, make sure to update first comment line 7 and uncomment line 6 in this file `./app/src/helpers/api.tsx`
+
+Then you can run the backend using the command `yarn run node-server`
+
+#### Database
+The database is the provided sqlite database located at `./server/db.sqlite`
+
+#### API Endpoints
+Available testing using Postman Collection: `./server/Redox.postman_collection.json`
+- Publicly available API URL: `http://redox.allureprojects.com:8888/`
+- Local API URL: `http://localhost:8888/`
+
+##### POST
+- Add Source: `/source/add`
+
+##### GET
+- Get All Sources (Not Deleted): `source`
+- Get Source by ID: `source/SOURCE_ID`
+    - Example: `http://redox.allureprojects.com:8888/source/80fe6e1e-6f1b-4b3c-957c-275d12bb3e48`
+- Get Message from Source: `source/SOURCE_ID/message`
+- Get All Messages: `message`
+- Get Message by ID: `message/MESSAGE_ID`
+- Get Source Details: `/source/SOURCE_ID/details`
+
+##### PATCH
+- Update Source: `source/SOURCE_ID/update`
+- Delete Source: `source/SOURCE_ID/delete`
+- Restore Source: `source/SOURCE_ID/restore`
+
+--------
 # Take-Home - SPA
 
 ## Getting things up and running
 
-- Clone or [fork](https://help.github.com/en/articles/fork-a-repo) this repoistory
+- Clone or [fork](https://help.github.com/en/articles/fork-a-repo) this repository
   - ```git clone git@github.com:100health/take-home.git```
 
 - Use tools of your choice to interact with the SQLite database (`db.sqlite`)

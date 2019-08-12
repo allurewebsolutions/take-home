@@ -1,7 +1,7 @@
 /**
  * The Server Can be configured and created here...
  *
- * You can find the JSON Data file here in the Data module. Feel free to impliment a framework if needed.
+ * You can find the JSON Data file here in the Data module. Feel free to implement a framework if needed.
  */
 
 const express = require('express');
@@ -9,7 +9,6 @@ const express = require('express');
 // setup the express app
 const app = express();
 const PORT = 8888;
-// const port = process.env.PORT || 8888;
 
 // setup connection to sqlite database
 const db = require('./database.js');
@@ -32,7 +31,7 @@ app.get('/', (req, res) => {
 
 // get all messages
 app.get('/message', (req, res) => {
-    const sql = 'SELECT * FROM message LIMIT 10';
+    const sql = 'SELECT * FROM message';
     const params = [];
 
     db.all(sql, params, (err, rows) => {
@@ -65,7 +64,7 @@ app.get('/message/:mid', (req, res) => {
 
 // get all sources
 app.get('/source', (req, res) => {
-    const sql = 'SELECT * FROM source';
+    const sql = "SELECT * FROM source WHERE deleted_at ISNULL OR deleted_at =''";
     const params = [];
 
     db.all(sql, params, (err, rows) => {
@@ -93,6 +92,31 @@ app.get('/source/:id', (req, res) => {
         res.json({
             'message': 'success',
             'data': rows
+        })
+    });
+});
+
+// get source details
+app.get('/source/:id/details', (req, res) => {
+    const sql = 'SELECT * FROM message WHERE source_id = ?';
+    const params = [req.params.id];
+
+    db.all(sql, params, (err, rows) => {
+        if (err) {
+            res.status(400).json({'error': err.message});
+            return;
+        }
+
+        const messageStatusCount = {
+            error: rows.reduce((acc, cur) => cur.status === 'error' ? ++acc : acc, 0),
+            enqueued: rows.reduce((acc, cur) => cur.status === 'enqueued' ? ++acc : acc, 0),
+            finished: rows.reduce((acc, cur) => cur.status === 'finished' ? ++acc : acc, 0),
+            processing: rows.reduce((acc, cur) => cur.status === 'processing' ? ++acc : acc, 0)
+        };
+
+        res.json({
+            'message': 'success',
+            'data': messageStatusCount
         })
     });
 });
@@ -148,44 +172,57 @@ app.patch('/source/:id/:action', (req, res) => {
     };
 
     // TODO: check if source is already deleted and prevent action from happening
-    if (req.params.action === 'update') {
-        db.run(
-                `UPDATE source
-                 set name        = COALESCE(?, name),
-                     environment = COALESCE(?, environment),
-                     encoding    = COALESCE(?, encoding),
-                     updated_at  = COALESCE(?, updated_at),
-                     deleted_at  = COALESCE(?, deleted_at)
-                 WHERE id = ?`,
-            [data.name, data.environment, data.encoding, data.updated_at, data.deleted_at, req.params.id],
-            function (err, result) {
-                if (err) {
-                    res.status(400).json({'error': res.message});
-                    return;
-                }
-                res.json({
-                    message: 'success',
-                    data: data,
-                    changes: this.changes
-                })
-            });
-    }
+    db.run(
+            `UPDATE source
+             set name        = COALESCE(?, name),
+                 environment = COALESCE(?, environment),
+                 encoding    = COALESCE(?, encoding),
+                 updated_at  = COALESCE(?, updated_at),
+                 deleted_at  = COALESCE(?, deleted_at)
+             WHERE id = ?`,
+        [data.name, data.environment, data.encoding, data.updated_at, data.deleted_at, req.params.id],
+        function (err, result) {
+            if (err) {
+                res.status(400).json({'error': res.message});
+                return;
+            }
+            res.json({
+                message: 'success',
+                data: data,
+                changes: this.changes
+            })
+        });
 });
 
 // get messages from a single source
 app.get('/source/:id/message', (req, res) => {
-    const sql = 'SELECT * FROM message WHERE source_id = ? LIMIT 10';
-    const params = [req.params.id];
-    db.all(sql, params, (err, rows) => {
-        if (err) {
-            res.status(400).json({'error': err.message});
-            return;
-        }
-        res.json({
-            'message': 'success',
-            'data': rows
-        })
-    });
+    const pageSize = parseInt(req.query.per_page);
+    const pageNo = parseInt(req.query.page);
+
+    if (pageNo <= 0) {
+        const response = {
+            success: false,
+            message: 'Invalid Page Number'
+        };
+        return res.status(200).json(response);
+    } else {
+        const sql = 'SELECT * FROM message WHERE source_id = ? LIMIT ? OFFSET ?';
+        const params = [req.params.id, pageSize, pageNo];
+
+        db.all(sql, params, (err, rows) => {
+            if (err) {
+                res.status(400).json({'error': err.message});
+                return;
+            }
+
+            const response = {
+                success: true,
+                data: rows
+            };
+
+            return res.status(200).json(response);
+        });
+    }
 });
 
 // default response for any other request

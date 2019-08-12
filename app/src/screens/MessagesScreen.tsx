@@ -127,7 +127,7 @@ export default class MessagesScreen extends Component {
                     borderTopWidth: 1,
                     marginTop: 10,
                     marginBottom: 10,
-                    borderColor: '#000'ut
+                    borderColor: '#000'
                 }}
             >
                 <ActivityIndicator animating size="large"/>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Component} from "react";
-import {Button, ScrollView} from "react-native";
+import {Button, ScrollView, View} from "react-native";
 import {NavigationScreenProps} from "react-navigation";
 import {Header} from "react-native-elements";
 
@@ -27,7 +27,11 @@ export default class MainScreen extends Component<NavigationScreenProps> {
 
     public render() {
         return (
-            <ScrollView style={{backgroundColor: "#fff", flex: 1}}>
+            <View style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
                 {this.destinationAndTitlePairs.map(destinationAndTitle => (
                     <Button
                         key={destinationAndTitle.destination}
@@ -35,11 +39,11 @@ export default class MainScreen extends Component<NavigationScreenProps> {
                         title={destinationAndTitle.title}
                     />
                 ))}
-            </ScrollView>
+            </View>
         );
     }
 
     private destinationAndTitlePairs: Array<DestinationAndTitle> = [
-        new DestinationAndTitle("Sources")
+        new DestinationAndTitle("Sources", "View All Sources")
     ];
 }
